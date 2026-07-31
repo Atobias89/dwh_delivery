@@ -1,0 +1,13 @@
+version: 2
+
+sources:
+  - name: deliv
+    schema: sch_delivery_center
+    tables: 
+      - name: channels
+      - name: deliveries
+      - name: drivers
+      - name: hubs
+      - name: orders
+      - name: payments
+      - name: stores 

@@ -1,0 +1,81 @@
+version: 2
+
+models: 
+  - name: stg_channel
+    columns:
+      - name : channel_id
+        constraints:
+          - type: primary_key
+      - name: channel_name
+      - name: channel_type
+      - name: created_at
+      - name: updated_at
+  - name : stg_drivers
+    columns: 
+      - name: driver_id
+        constraints:
+          - type : primary_key
+      - name: driver_modal
+      - name: driver_type
+      - name: created_at
+      - name: updated_at
+  - name : stg_stores
+    columns : 
+      - name: store_id
+        constraints: 
+          - type: primary_key 
+      - name : store_name
+      - name : store_segment
+      - name : store_plan_price
+      - name : store_latitude
+      - name : store_longitude
+      - name : hub_name
+      - name : hub_city
+      - name : hub_state
+      - name:  hub_latitude 
+      - name : hub_longitude 
+  - name: stg_orders
+    columns:
+      - name: order_id
+        constraints:
+          - type : primary_key
+      - name: store_id 
+      - name : channel_id 
+      - name : payment_order_id
+      - name : delivery_order_id
+      - name : order_status 
+      - name : order_amount
+      - name: order_delivery_fee
+      - name : order_delivery_cost
+      - name : order_created_hour
+      - name : order_created_minute
+      - name : order_created_day
+      - name : order_created_month
+      - name : order_created_year
+      - name : order_moment_created
+      - name : order_moment_accepted
+      - name : order_moment_ready
+      - name : order_moment_collected
+      - name : order_moment_in_expedition
+      - name : order_moment_delivering
+      - name : order_moment_delivered
+      - name : order_moment_finished
+      - name : order_metric_collected_time 
+      - name : order_metric_paused_time
+      - name : order_metric_production_time 
+      - name : order_metric_walking_time
+      - name : order_metric_expediton_speed_time
+      - name : order_metric_transit_time
+      - name : order_metric_cycle_time
+  
+  - name: stg_payments
+    columns:
+      - name : payment_id
+        constraints: 
+          - type: primary_key
+      - name: payment_order_id
+      - name: payment_amount 
+      - name: payment_fee
+      - name : payment_method
+      - name : payment_status
+  
