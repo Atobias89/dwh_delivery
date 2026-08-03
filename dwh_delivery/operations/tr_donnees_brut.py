@@ -4,8 +4,8 @@ import time
 
 class tr_donnees_brut:
     def __init__(self):
-        self.path = "raw_data/"
-        self.dest_path = "treated_data/"
+        self.path = "operations/raw_data/"
+        self.dest_path = "operations/treated_data/"
         self.files_list = []
         self.df = None
 

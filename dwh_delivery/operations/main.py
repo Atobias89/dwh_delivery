@@ -4,10 +4,10 @@ import chargement_donnees as cd
 
 
 def main () -> int : 
-    # data_cleanance = tr_data.tr_donnees_brut()
-    # data_cleanance.load_file()
-    # data_cleanance.erease_duplicates()
-    # data_cleanance.erease_na_data()
+    data_cleanance = tr_data.tr_donnees_brut()
+    data_cleanance.load_file()
+    data_cleanance.erease_duplicates()
+    data_cleanance.erease_na_data()
 
     chargement = cd.chargement_donnees()
     chargement.connect()
