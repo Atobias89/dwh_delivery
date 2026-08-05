@@ -22,6 +22,19 @@ with store as (
         hb.hub_state,
         hb.hub_latitude,
         hb.hub_longitude,
+        {{ dbt_utils.generate_surrogate_key([
+            'st.store_id',
+            'st.store_name',
+            'st.store_segment',
+            'st.store_plan_price',
+            'st.store_latitude',
+            'st.store_longitude',
+            'hb.hub_name',
+            'hb.hub_city',
+            'hb.hub_state',
+            'hb.hub_latitude',
+            'hb.hub_longitude'
+        ]) }} AS hash_diff,
         CURRENT_DATE() created_at,
         CURRENT_DATE() updated_at
     from
@@ -30,22 +43,32 @@ with store as (
 )
 
 select
-    store_id,  
-    store_name,
-    store_segment,
-    store_plan_price,
-    store_latitude,
-    store_longitude,
-    hub_name,
-    hub_city,
-    hub_state,
-    hub_latitude,
-    hub_longitude,
-    created_at,
-    updated_at
+    s.store_id,  
+    s.store_name,
+    s.store_segment,
+    s.store_plan_price,
+    s.store_latitude,
+    s.store_longitude,
+    s.hub_name,
+    s.hub_city,
+    s.hub_state,
+    s.hub_latitude,
+    s.hub_longitude,
+    s.hash_diff,
+    s.created_at,
+    s.updated_at
 from 
-    store
+    store s
 
 {% if is_incremental() %}
-    where updated_at > (select coalesce(max(updated_at), '1900-01-01') from {{this}})
+    where s.store_id in (
+        select store_id from store
+        except 
+        select store_id from  {{this}}
+    ) or s.store_id in (
+        select st.store_id  
+        from store st 
+        left join {{this}} t on st.store_id = t.store_id
+        where st.hash_diff != t.hash_diff
+    )
 {% endif %}

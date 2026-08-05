@@ -17,6 +17,12 @@ with payment as (
         payment_fee,
         payment_method,
         payment_status,
+        {{dbt_utils.generate_surrogate_key([ 'payment_id',
+            'payment_order_id',
+            'payment_amount',
+            'payment_fee',
+            'payment_method',
+            'payment_status'])}} hash_diff,
         CURRENT_DATE() created_at,
         CURRENT_DATE() updated_at
     from 
@@ -24,17 +30,28 @@ with payment as (
 )
 
 select 
-    payment_id,
-    payment_order_id,
-    payment_amount,
-    payment_fee,
-    payment_method,
-    payment_status,
-    created_at,
-    updated_at
+    p.payment_id,
+    p.payment_order_id,
+    p.payment_amount,
+    p.payment_fee,
+    p.payment_method,
+    p.payment_status,
+    p.hash_diff,
+    p.created_at,
+    p.updated_at
 from 
-    payment
+    payment p
 
 {% if is_incremental() %}
-    where updated_at > (select coalesce(max(updated_at), '1900-01-01') from {{this}})
+    where  p.payment_id in (
+        select payment_id from payment
+        except
+        select payment_id from {{this}}
+    )
+    or p.payment_id in (
+        select p.payment_id 
+        from payment p
+        left join {{this}} t on p.payment_id = t.payment_id
+        where p.hash_diff != t.hash_diff
+    )
 {% endif %}

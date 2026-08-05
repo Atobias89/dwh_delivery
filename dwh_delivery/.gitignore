@@ -4,3 +4,4 @@ dbt_packages/
 logs/
 raw_data/
 treated_data/
+__pycache__/

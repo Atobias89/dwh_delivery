@@ -13,6 +13,9 @@ with channels as (
         channel_id,
         channel_name,
         channel_type,
+        {{dbt_utils.generate_surrogate_key(['channel_id',
+            'channel_name',
+            'channel_type'])}} hash_diff,
         CURRENT_DATE() created_at,
         CURRENT_DATE() updated_at
     from
@@ -20,14 +23,17 @@ with channels as (
 )
 
 select
-    channel_id,
-    channel_name,
-    channel_type,
-    created_at,
-    updated_at
+    c.channel_id,
+    c.channel_name,
+    c.channel_type,
+    c.hash_diff,
+    c.created_at,
+    c.updated_at
 from 
-    channels
+    channels c
 
 {% if is_incremental() %}
-    where updated_at > (select coalesce(max(updated_at), '1900-01-01') from {{this}})
+    left join {{this}} t on c.channel_id = t.channel_id
+    where t.channel_id is null 
+        or c.hash_diff != t.hash_diff 
 {% endif %}
